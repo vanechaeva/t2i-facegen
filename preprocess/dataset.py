@@ -39,3 +39,15 @@ class ImageTextDataset(torch.utils.data.Dataset):
             wrong_image = self.transform(wrong_image)
 
         return true_image, true_text, wrong_image
+
+def process_data(attribute_csv_path):
+    attributes_df = pd.read_csv(attribute_csv_path)
+
+    drop_cols = {"Мешки_под_глазами", "Челка", "Размытый", "Безбородый"}
+    attributes_df = attributes_df.drop(columns=drop_cols)
+    only_attributes = attributes_df.drop(columns="image_id")
+    classes = set(only_attributes)
+    print("Представленные классы: ", classes)
+    print("Количество классов: ", len(classes))
+
+    return only_attributes, classes
