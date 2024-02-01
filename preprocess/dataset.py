@@ -51,3 +51,18 @@ def process_data(attribute_csv_path):
     print("Количество классов: ", len(classes))
 
     return only_attributes, classes
+
+def generate_weights(arr, num_classes):
+    counts = np.zeros(num_classes)
+    for row in tqdm(arr):
+        indexes = np.where(row == 1)
+        counts[indexes] += 1
+    N = float(sum(counts))
+    weight_per_class = np.zeros(num_classes)
+    for i in range(num_classes):
+        weight_per_class[i] = N / counts[i]
+    weights = [0.0] * len(arr)
+    for i, row in tqdm(enumerate(arr)):
+        indexes = np.where(row == 1)
+        weights[i] = sum(weight_per_class[indexes])
+    return weights
