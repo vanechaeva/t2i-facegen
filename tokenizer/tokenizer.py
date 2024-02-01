@@ -92,3 +92,6 @@ class Tokenizer:
             sentences.append(sentence)
 
         return sentences
+
+    def __preprocess_sentence(self, sentence):
+        return sentence.replace(".", " .").replace(",", " ,").replace("'", " '")
