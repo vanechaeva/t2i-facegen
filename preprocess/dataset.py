@@ -66,3 +66,35 @@ def generate_weights(arr, num_classes):
         indexes = np.where(row == 1)
         weights[i] = sum(weight_per_class[indexes])
     return weights
+
+def get_weighted_dataloader(
+    attribute_csv_path,
+    image_location = None,
+    text_desc_location = None,
+    transform = None,
+    subset_size = 10000,
+    batch_size = 64,
+):
+    random_indices = torch.randperm(subset_size)
+    only_attributes, classes = process_data(attribute_csv_path)
+    only_attributes = only_attributes.iloc[random_indices]
+    print("Длина подмножества данных:", len(only_attributes))
+
+    weights = generate_weights(only_attributes.values, len(classes))
+    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
+
+    dataset = ImageTextDataset(
+        image_location, text_desc_location, transform=transform
+    )
+
+    subset_dataset = torch.utils.data.Subset(dataset, random_indices)
+
+    weighted_dataloader = torch.utils.data.DataLoader(
+        subset_dataset,
+        batch_size = batch_size,
+        shuffle = False,
+        sampler = sampler,
+        pin_memory = True,
+    )
+
+    return weighted_dataloader, iter(weighted_dataloader)
