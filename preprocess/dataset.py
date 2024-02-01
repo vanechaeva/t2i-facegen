@@ -69,11 +69,11 @@ def generate_weights(arr, num_classes):
 
 def get_weighted_dataloader(
     attribute_csv_path,
-    image_location = None,
-    text_desc_location = None,
-    transform = None,
-    subset_size = 10000,
-    batch_size = 64,
+    image_location=None,
+    text_desc_location=None,
+    transform=None,
+    subset_size=10000,
+    batch_size=64,
 ):
     random_indices = torch.randperm(subset_size)
     only_attributes, classes = process_data(attribute_csv_path)
@@ -91,10 +91,10 @@ def get_weighted_dataloader(
 
     weighted_dataloader = torch.utils.data.DataLoader(
         subset_dataset,
-        batch_size = batch_size,
-        shuffle = False,
-        sampler = sampler,
-        pin_memory = True,
+        batch_size=batch_size,
+        shuffle=False,
+        sampler=sampler,
+        pin_memory=True,
     )
 
     return weighted_dataloader, iter(weighted_dataloader)
